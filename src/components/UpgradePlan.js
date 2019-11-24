@@ -1,5 +1,4 @@
 import React from 'react';
-import clsx from 'clsx';
 import PropTypes from 'prop-types';
 
 // material
@@ -29,14 +28,12 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const UpgradePlan = props => {
-  const { className, ...rest } = props;
-  
+const UpgradePlan = ({ isPro, onUpgradeClick }) => {
   const classes = useStyles();
   
   return (
     <div
-      className={clsx(classes.root, className)}
+      className={classes.root}
     >
       <div className={classes.content}>
         <Typography
@@ -46,28 +43,29 @@ const UpgradePlan = props => {
         >
           Upgrade to PRO
         </Typography>
-        <Typography
-          align="center"
-          variant="body2"
-        >
-          Upgrade to PRO and get more awesomness
-        </Typography>
+        {isPro || (
+          <Typography
+            align="center"
+            variant="body2"
+          >
+            Upgrade to PRO and get more awesomness
+          </Typography>
+        )}
       </div>
       <div className={classes.actions}>
         <Button
-          color="primary"
+          color="secondary"
           component="a"
-          variant="contained"
+          variant={isPro ? 'outlined' : 'contained'}
+          onClick={onUpgradeClick}
         >
-          Upgrade
+          {isPro ? 'Unsubscribe' : 'Upgrade'}
         </Button>
       </div>
     </div>
   );
 };
 
-UpgradePlan.propTypes = {
-  className: PropTypes.string
-};
+UpgradePlan.propTypes = {};
 
 export default UpgradePlan;

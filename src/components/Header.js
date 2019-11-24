@@ -2,18 +2,22 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 
 // material
-import AppBar from '@material-ui/core/AppBar';
-import Avatar from '@material-ui/core/Avatar';
-import Grid from '@material-ui/core/Grid';
-import Hidden from '@material-ui/core/Hidden';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
+import {
+  AppBar,
+  Avatar,
+  Grid,
+  Hidden,
+  IconButton,
+  Tab,
+  Tabs,
+  Toolbar,
+  Tooltip,
+  Typography
+} from '@material-ui/core';
+
 import NotificationsIcon from '@material-ui/icons/Notifications';
-import Tab from '@material-ui/core/Tab';
-import Tabs from '@material-ui/core/Tabs';
-import Toolbar from '@material-ui/core/Toolbar';
-import Tooltip from '@material-ui/core/Tooltip';
-import Typography from '@material-ui/core/Typography';
+import MenuIcon from '@material-ui/icons/Menu';
+
 import { withStyles } from '@material-ui/core/styles';
 
 const lightColor = 'rgba(255, 255, 255, 0.7)';
@@ -101,7 +105,7 @@ function Header(props) {
         elevation={0}
       >
         <Tabs value={0} textColor="inherit">
-          <Tab textColor="inherit" label="LIST" />
+          <Tab textColor="inherit" label="DEFAULT" />
           <Tab textColor="inherit" label="LOREM" />
           <Tab textColor="inherit" label="IPSUM" />
         </Tabs>

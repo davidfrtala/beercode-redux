@@ -1,16 +1,17 @@
 import React from 'react';
-import clsx from 'clsx';
 import PropTypes from 'prop-types';
 
 // material
 import { makeStyles } from '@material-ui/styles';
 import { Avatar, Typography } from '@material-ui/core';
+import StarIcon from '@material-ui/icons/Star';
 
 const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    margin: '20px 0',
     minHeight: 'fit-content'
   },
   avatar: {
@@ -22,9 +23,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Profile = props => {
-  const { className, ...rest } = props;
-  
+const Profile = ({ isPro }) => {
   const classes = useStyles();
   
   const user = {
@@ -35,8 +34,7 @@ const Profile = props => {
   
   return (
     <div
-      {...rest}
-      className={clsx(classes.root, className)}
+      className={classes.root}
     >
       <Avatar
         alt="Person"
@@ -48,14 +46,15 @@ const Profile = props => {
         variant="h4"
       >
         {user.name}
+
+        {isPro && <StarIcon />}
       </Typography>
-      <Typography variant="body2">{user.bio}</Typography>
     </div>
   );
 };
 
 Profile.propTypes = {
-  className: PropTypes.string
+  isPro: PropTypes.bool
 };
 
 export default Profile;

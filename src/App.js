@@ -4,19 +4,14 @@ import theme from './themes/default'
 
 // material
 import { ThemeProvider, withStyles } from '@material-ui/core/styles';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Hidden from '@material-ui/core/Hidden';
-import Typography from '@material-ui/core/Typography';
+import { Typography } from '@material-ui/core';
 
 // containers
 import Wishlist from './containers/Wishlist';
-import Navigator from './containers/Navigator';
+import Sidebar from './containers/Sidebar';
 
 // components
 import Header from './components/Header';
-
-
-const drawerWidth = 256;
 
 const styles = {
   root: {
@@ -25,7 +20,7 @@ const styles = {
   },
   drawer: {
     [theme.breakpoints.up('sm')]: {
-      width: drawerWidth,
+      width: 256,
       flexShrink: 0,
     },
   },
@@ -47,37 +42,21 @@ const styles = {
 
 function App(props) {
   const { classes } = props;
-  const [mobileOpen, setMobileOpen] = React.useState(false);
-  
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
-  };
   
   return (
     <ThemeProvider theme={theme}>
       <div className={classes.root}>
-        <CssBaseline />
         <nav className={classes.drawer}>
-          <Hidden smUp implementation="js">
-            <Navigator
-              PaperProps={{ style: { width: drawerWidth } }}
-              variant="temporary"
-              open={mobileOpen}
-              onClose={handleDrawerToggle}
-            />
-          </Hidden>
-          <Hidden xsDown implementation="css">
-            <Navigator PaperProps={{ style: { width: drawerWidth } }} />
-          </Hidden>
+          <Sidebar />
         </nav>
         <div className={classes.app}>
-          <Header onDrawerToggle={handleDrawerToggle} />
+          <Header/>
           <main className={classes.main}>
             <Wishlist />
           </main>
           <footer className={classes.footer}>
             <Typography variant="body2" color="textSecondary" align="center">
-              Beer Code 2019
+              Beer Code 2019 @ David Frtala
             </Typography>
           </footer>
         </div>

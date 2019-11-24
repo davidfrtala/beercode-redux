@@ -1,16 +1,26 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import uuid from 'uuid/v4';
 
 // material
+import {
+  AppBar,
+  Toolbar,
+  Tooltip,
+  Paper,
+  Grid,
+  Button,
+  TextField,
+  List
+} from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
+
+// icons
 import SearchIcon from '@material-ui/icons/Search';
+
+// components
+import WishlistItem from '../components/WishlistItem';
+import AddItemDialog from '../components/AddItemDialog';
 
 const styles = theme => ({
   paper: {
@@ -35,46 +45,112 @@ const styles = theme => ({
   },
 });
 
-function Content(props) {
-  const { classes } = props;
+class Wishlist extends Component {
+
+  state = {
+    dialogOpen: false,
+    items: [
+      { id: uuid(), title: "Red Dead Redemption 2" },
+      { id: uuid(), title: "Death Stranding" },
+      { id: uuid(), title: "Cyberpunk 2077" },
+      { id: uuid(), title: "The Last Of Us 2" },
+    ]
+  };
   
-  return (
-    <Paper className={classes.paper}>
-      <AppBar className={classes.searchBar} position="static" color="default" elevation={0}>
-        <Toolbar>
-          <Grid container spacing={2} alignItems="center">
-            <Grid item>
-              <SearchIcon className={classes.block} color="inherit" />
+  handleModalOpen = () => this.setState({ dialogOpen: true });
+  
+  handleModalClose = () => this.setState({ dialogOpen: false });
+  
+  addItem = title => this.setState({
+    items: [
+      ...this.state.items,
+      { id: uuid(), title }
+    ]
+  });
+  
+  deleteItem = id => this.setState({
+    items: this.state.items.filter(item => item.id !== id)
+  });
+  
+  render() {
+    const { classes, itemsMax } = this.props;
+    const { items, dialogOpen } = this.state;
+    const isAddDisabled = items.length >= itemsMax;
+    
+    return (
+      <Paper className={classes.paper}>
+        
+        <AppBar className={classes.searchBar} position="static" color="default" elevation={0}>
+          <Toolbar>
+            <Grid container spacing={2} alignItems="center">
+              <Grid item>
+                <SearchIcon className={classes.block} color="inherit" />
+              </Grid>
+              <Grid item xs>
+                <TextField
+                  fullWidth
+                  placeholder="Search by name"
+                  InputProps={{
+                    disableUnderline: true,
+                    className: classes.searchInput,
+                  }}
+                />
+              </Grid>
+              <Grid item>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className={classes.addUser}
+                  onClick={this.handleModalOpen}
+                  disabled={isAddDisabled}
+                >
+                  Add item
+                </Button>
+  
+                <Tooltip title="Upgrade to PRO and unlock this limit" arrow>
+                  <Button>
+                    {`${items.length} / ${itemsMax}`}
+                  </Button>
+                </Tooltip>
+              </Grid>
             </Grid>
+          </Toolbar>
+        </AppBar>
+        
+        <div className={classes.contentWrapper}>
+          <Grid container>
             <Grid item xs>
-              <TextField
-                fullWidth
-                placeholder="Search by name"
-                InputProps={{
-                  disableUnderline: true,
-                  className: classes.searchInput,
-                }}
-              />
-            </Grid>
-            <Grid item>
-              <Button variant="contained" color="primary" className={classes.addUser}>
-                Add item
-              </Button>
+              <List>
+                {items.map(item => (
+                  <WishlistItem
+                    key={item.id}
+                    id={item.id}
+                    title={item.title}
+                    onDelete={this.deleteItem}
+                  />
+                ))}
+              </List>
             </Grid>
           </Grid>
-        </Toolbar>
-      </AppBar>
-      <div className={classes.contentWrapper}>
-        <Typography color="textSecondary" align="center">
-          No items in a list yet
-        </Typography>
-      </div>
-    </Paper>
-  );
+        </div>
+        
+        <AddItemDialog
+          open={dialogOpen}
+          onSubmit={this.addItem}
+          onClose={this.handleModalClose}
+        />
+      </Paper>
+    );
+  }
 }
 
-Content.propTypes = {
+Wishlist.propTypes = {
   classes: PropTypes.object.isRequired,
+  itemsMax: PropTypes.number.isRequired,
 };
 
-export default withStyles(styles)(Content);
+Wishlist.defaultProps = {
+  itemsMax: 5
+};
+
+export default withStyles(styles)(Wishlist);
