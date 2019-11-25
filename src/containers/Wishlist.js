@@ -3,6 +3,13 @@ import PropTypes from 'prop-types';
 
 import { StoreContext } from '../ridaks/store'
 
+import {
+  addItem,
+  deleteItem,
+  modalOpen,
+  modalClose
+} from '../ridaks/reducers/wishlist'
+
 
 // material
 import {
@@ -92,7 +99,7 @@ class Wishlist extends Component {
                   variant="contained"
                   color="primary"
                   className={classes.addUser}
-                  onClick={() => store.dispatch({ type: 'MODAL_OPEN' })}
+                  onClick={() => store.dispatch(modalOpen())}
                   disabled={isAddDisabled}
                 >
                   Add item
@@ -117,10 +124,7 @@ class Wishlist extends Component {
                     key={item.id}
                     id={item.id}
                     title={item.title}
-                    onDelete={id => store.dispatch({
-                      type: 'DELETE_ITEM',
-                      id
-                    })}
+                    onDelete={id => store.dispatch(deleteItem(id))}
                   />
                 ))}
               </List>
@@ -130,11 +134,8 @@ class Wishlist extends Component {
 
         <AddItemDialog
           open={dialogOpen}
-          onSubmit={title => store.dispatch({
-            type: 'ADD_ITEM',
-            title
-          })}
-          onClose={() => store.dispatch({ type: 'MODAL_CLOSE' })}
+          onSubmit={title => store.dispatch(addItem(title))}
+          onClose={() => store.dispatch(modalClose())}
         />
       </Paper>
     );

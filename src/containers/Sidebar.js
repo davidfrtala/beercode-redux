@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 
+import { togglePro } from '../ridaks/reducers/user'
 import { StoreContext } from "../ridaks/store";
 
 // material
@@ -34,7 +35,7 @@ class Sidebar extends Component {
 
         <UpgradePlan
           isPro={isPro}
-          onUpgradeClick={() => store.dispatch({ type: 'TOGGLE_PRO' })}
+          onUpgradeClick={() => store.dispatch(togglePro())}
         />
       </Drawer>
     );

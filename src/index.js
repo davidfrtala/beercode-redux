@@ -6,8 +6,12 @@ import App from './App';
 import theme from './themes/default';
 import {
   StoreContext,
-  store
+  createStore,
+  combineReducers
 } from './ridaks/store';
+import reducers from "./ridaks/reducers";
+
+export const store = createStore(combineReducers(reducers));
 
 ReactDOM.render(
   <ThemeProvider theme={theme}>
