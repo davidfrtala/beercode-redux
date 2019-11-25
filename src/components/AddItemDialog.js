@@ -12,12 +12,12 @@ import {
 
 export default function AddItemDialog({ open, onSubmit, onClose }) {
   const myInput = useRef();
-  
+
   const handleSubmit = e => {
     const { value } = myInput.current;
     e.preventDefault();
-    
-    if (value != '') {
+
+    if (value !== '') {
       onSubmit(myInput.current.value);
       onClose();
     }
