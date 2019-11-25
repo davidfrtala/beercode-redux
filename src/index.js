@@ -11,8 +11,7 @@ import {
 
 ReactDOM.render(
   <ThemeProvider theme={theme}>
-    <StoreContext.Provider value={store} store={store}>
-      {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+    <StoreContext.Provider value={store}>
       <CssBaseline />
       <App />
     </StoreContext.Provider>
