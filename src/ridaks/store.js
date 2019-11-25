@@ -27,6 +27,9 @@ export const createStore = (reducer) => {
     state = reducer(state, action);
     // notify subscribers
     listeners.forEach(listen => listen());
+
+    // print the most recent state tree to console (just for debug)
+    console.log('ridaks state: ', state);
   };
 
   const subscribe = listener => {
