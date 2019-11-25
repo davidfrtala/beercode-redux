@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 // material
 import { makeStyles } from '@material-ui/styles';
@@ -30,7 +29,7 @@ const useStyles = makeStyles(theme => ({
 
 const UpgradePlan = ({ isPro, onUpgradeClick }) => {
   const classes = useStyles();
-  
+
   return (
     <div
       className={classes.root}
@@ -65,7 +64,5 @@ const UpgradePlan = ({ isPro, onUpgradeClick }) => {
     </div>
   );
 };
-
-UpgradePlan.propTypes = {};
 
 export default UpgradePlan;

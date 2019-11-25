@@ -46,7 +46,7 @@ const styles = theme => ({
 
 function Header(props) {
   const { classes, onDrawerToggle } = props;
-  
+
   return (
     <Fragment>
       <AppBar color="primary" position="sticky" elevation={0}>
@@ -115,8 +115,7 @@ function Header(props) {
 }
 
 Header.propTypes = {
-  classes: PropTypes.object.isRequired,
-  onDrawerToggle: PropTypes.func.isRequired,
+  classes: PropTypes.object.isRequired
 };
 
 export default withStyles(styles)(Header);
