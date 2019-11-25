@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import { StoreContext } from "../ridaks/store";
+
 // material
 import { Drawer, Divider } from '@material-ui/core';
 
@@ -8,29 +10,31 @@ import Profile from '../components/Profile';
 import UpgradePlan from '../components/UpgradePlan';
 
 class Sidebar extends Component {
+  static contextType = StoreContext;
 
-  state = {
-    isPro: false
-  };
-  
-  togglePro = () => this.setState({
-    isPro: !this.state.isPro
-  });
+  componentDidMount() {
+    this.unsubscribeStore = this.context.subscribe(() => this.forceUpdate());
+  }
+
+  componentWillUnmount() {
+    this.unsubscribeStore();
+  }
 
   render() {
-    const { isPro } = this.state;
-    
+    const store = this.context;
+    const { isPro } = store.getState().user;
+
     return (
       <Drawer variant="permanent" PaperProps={{ style: { width: 256 } }}>
         <Profile
           isPro={isPro}
         />
-        
+
         <Divider />
-        
+
         <UpgradePlan
           isPro={isPro}
-          onUpgradeClick={this.togglePro}
+          onUpgradeClick={() => store.dispatch({ type: 'TOGGLE_PRO' })}
         />
       </Drawer>
     );

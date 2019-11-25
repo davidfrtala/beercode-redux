@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import uuid from 'uuid/v4';
+
+import { StoreContext } from '../ridaks/store'
+
 
 // material
 import {
@@ -46,40 +48,29 @@ const styles = theme => ({
 });
 
 class Wishlist extends Component {
+  static contextType = StoreContext;
 
-  state = {
-    dialogOpen: false,
-    items: [
-      { id: uuid(), title: "Red Dead Redemption 2" },
-      { id: uuid(), title: "Death Stranding" },
-      { id: uuid(), title: "Cyberpunk 2077" },
-      { id: uuid(), title: "The Last Of Us 2" },
-    ]
-  };
-  
-  handleModalOpen = () => this.setState({ dialogOpen: true });
-  
-  handleModalClose = () => this.setState({ dialogOpen: false });
-  
-  addItem = title => this.setState({
-    items: [
-      ...this.state.items,
-      { id: uuid(), title }
-    ]
-  });
-  
-  deleteItem = id => this.setState({
-    items: this.state.items.filter(item => item.id !== id)
-  });
-  
+  componentDidMount() {
+    this.unsubscribeStore = this.context.subscribe(() => this.forceUpdate());
+  }
+
+  componentWillUnmount() {
+    this.unsubscribeStore();
+  }
+
   render() {
     const { classes, itemsMax } = this.props;
-    const { items, dialogOpen } = this.state;
-    const isAddDisabled = items.length >= itemsMax;
-    
+    const store = this.context;
+
+    const { items, dialogOpen } = store.getState().wishlist;
+    const { isPro } = store.getState().user;
+
+    const itemsLimit = isPro ? 100 : itemsMax;
+    const isAddDisabled = items.length >= itemsLimit;
+
     return (
       <Paper className={classes.paper}>
-        
+
         <AppBar className={classes.searchBar} position="static" color="default" elevation={0}>
           <Toolbar>
             <Grid container spacing={2} alignItems="center">
@@ -101,22 +92,22 @@ class Wishlist extends Component {
                   variant="contained"
                   color="primary"
                   className={classes.addUser}
-                  onClick={this.handleModalOpen}
+                  onClick={() => store.dispatch({ type: 'MODAL_OPEN' })}
                   disabled={isAddDisabled}
                 >
                   Add item
                 </Button>
-  
+
                 <Tooltip title="Upgrade to PRO and unlock this limit" arrow>
                   <Button>
-                    {`${items.length} / ${itemsMax}`}
+                    {`${items.length} / ${itemsLimit}`}
                   </Button>
                 </Tooltip>
               </Grid>
             </Grid>
           </Toolbar>
         </AppBar>
-        
+
         <div className={classes.contentWrapper}>
           <Grid container>
             <Grid item xs>
@@ -126,18 +117,24 @@ class Wishlist extends Component {
                     key={item.id}
                     id={item.id}
                     title={item.title}
-                    onDelete={this.deleteItem}
+                    onDelete={id => store.dispatch({
+                      type: 'DELETE_ITEM',
+                      id
+                    })}
                   />
                 ))}
               </List>
             </Grid>
           </Grid>
         </div>
-        
+
         <AddItemDialog
           open={dialogOpen}
-          onSubmit={this.addItem}
-          onClose={this.handleModalClose}
+          onSubmit={title => store.dispatch({
+            type: 'ADD_ITEM',
+            title
+          })}
+          onClose={() => store.dispatch({ type: 'MODAL_CLOSE' })}
         />
       </Paper>
     );
