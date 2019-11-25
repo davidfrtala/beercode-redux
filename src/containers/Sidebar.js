@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import { togglePro } from '../ridaks/reducers/user'
-import { StoreContext } from "../ridaks/store";
+import { connect } from "../ridaks/store";
 
 // material
 import { Drawer, Divider } from '@material-ui/core';
@@ -11,19 +11,12 @@ import Profile from '../components/Profile';
 import UpgradePlan from '../components/UpgradePlan';
 
 class Sidebar extends Component {
-  static contextType = StoreContext;
-
-  componentDidMount() {
-    this.unsubscribeStore = this.context.subscribe(() => this.forceUpdate());
-  }
-
-  componentWillUnmount() {
-    this.unsubscribeStore();
-  }
 
   render() {
-    const store = this.context;
-    const { isPro } = store.getState().user;
+    const {
+      isPro,
+      togglePro
+    } = this.props;
 
     return (
       <Drawer variant="permanent" PaperProps={{ style: { width: 256 } }}>
@@ -35,7 +28,7 @@ class Sidebar extends Component {
 
         <UpgradePlan
           isPro={isPro}
-          onUpgradeClick={() => store.dispatch(togglePro())}
+          onUpgradeClick={togglePro}
         />
       </Drawer>
     );
@@ -43,4 +36,11 @@ class Sidebar extends Component {
 }
 
 
-export default Sidebar;
+export default connect(
+(state) => ({
+    isPro: state.user.isPro
+  }),
+(dispatch) => ({
+    togglePro: () => dispatch(togglePro()),
+  })
+)(Sidebar);

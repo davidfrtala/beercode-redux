@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import { StoreContext } from '../ridaks/store'
+import { connect } from '../ridaks/store'
 
 import {
   addItem,
@@ -55,22 +55,19 @@ const styles = theme => ({
 });
 
 class Wishlist extends Component {
-  static contextType = StoreContext;
-
-  componentDidMount() {
-    this.unsubscribeStore = this.context.subscribe(() => this.forceUpdate());
-  }
-
-  componentWillUnmount() {
-    this.unsubscribeStore();
-  }
 
   render() {
-    const { classes, itemsMax } = this.props;
-    const store = this.context;
-
-    const { items, dialogOpen } = store.getState().wishlist;
-    const { isPro } = store.getState().user;
+    const {
+      classes,
+      itemsMax,
+      items,
+      dialogOpen,
+      isPro,
+      addItem,
+      deleteItem,
+      modalOpen,
+      modalClose
+    } = this.props;
 
     const itemsLimit = isPro ? 100 : itemsMax;
     const isAddDisabled = items.length >= itemsLimit;
@@ -99,7 +96,7 @@ class Wishlist extends Component {
                   variant="contained"
                   color="primary"
                   className={classes.addUser}
-                  onClick={() => store.dispatch(modalOpen())}
+                  onClick={modalOpen}
                   disabled={isAddDisabled}
                 >
                   Add item
@@ -124,7 +121,7 @@ class Wishlist extends Component {
                     key={item.id}
                     id={item.id}
                     title={item.title}
-                    onDelete={id => store.dispatch(deleteItem(id))}
+                    onDelete={deleteItem}
                   />
                 ))}
               </List>
@@ -134,8 +131,8 @@ class Wishlist extends Component {
 
         <AddItemDialog
           open={dialogOpen}
-          onSubmit={title => store.dispatch(addItem(title))}
-          onClose={() => store.dispatch(modalClose())}
+          onSubmit={addItem}
+          onClose={modalClose}
         />
       </Paper>
     );
@@ -151,4 +148,16 @@ Wishlist.defaultProps = {
   itemsMax: 5
 };
 
-export default withStyles(styles)(Wishlist);
+export default connect(
+  (state) => ({
+    items: state.wishlist.items,
+    dialogOpen: state.wishlist.dialogOpen,
+    isPro: state.user.isPro
+  }),
+  (dispatch) => ({
+    addItem: title => dispatch(addItem(title)),
+    deleteItem: id => dispatch(deleteItem(id)),
+    modalOpen: () => dispatch(modalOpen()),
+    modalClose: () => dispatch(modalClose()),
+  })
+)(withStyles(styles)(Wishlist));

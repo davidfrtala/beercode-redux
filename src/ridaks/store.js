@@ -49,3 +49,31 @@ export const createStore = (reducer) => {
 };
 
 export const StoreContext = React.createContext();
+
+export function connect(mapStateToProps, mapDispatchToProps) {
+  return Container => {
+    return class extends React.Component {
+      static contextType = StoreContext;
+
+      componentDidMount() {
+        this.unsubscribeStore = this.context.subscribe(() => this.forceUpdate());
+      }
+
+      componentWillUnmount() {
+        this.unsubscribeStore();
+      }
+
+      render() {
+        const store = this.context;
+
+        return (
+          <Container
+            {...this.props}
+            {...mapStateToProps(store.getState())}
+            {...mapDispatchToProps(store.dispatch)}
+          />
+        );
+      }
+    }
+  }
+}
